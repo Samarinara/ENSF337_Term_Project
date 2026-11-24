@@ -3,11 +3,11 @@
 Places where the backend doesn't fully support the menus yet. Each one is
 also marked with a `BACKEND NOTE:` comment in `main.cpp`.
 
-1. **Selecting a flight by number** – The sample run uses "Enter the flight number: 1",
-   but `Airline` only has `findFlight(code)`. The menu currently asks for the flight code.
-   Suggested: add `getFlightCount()` and `getFlight(int index)` to `Airline`.
+1. ~~**Selecting a flight by number**~~ – Fixed: `Airline` now has `getFlightCount()` and
+   `getFlight(int number)` (1-based), and the menu selects flights by number.
 2. **`Airline::displayFlights()`** – Doesn't number the flights or show rows / seats per row
-   like the sample run (`1. AC210 Calgary Vancouver 8 4`).
+   like the sample run (`1. AC210 Calgary Vancouver 8 4`). This matters more now, since
+   option 2 asks for the flight's number from this list.
 3. **`Flight::displaySeatMap()`** – Missing the `A B C D` column-letter header.
 4. **`Passenger::print()`** – Fields are separated by single spaces, so rows don't line up
    under the passenger table headers. Use `setw` for aligned columns.

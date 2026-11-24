@@ -76,16 +76,15 @@ int showMenu() {
 
 // ---------- Menu actions ----------
 
-// Option 2: asks for a flight and returns it, or nullptr if not found.
-// BACKEND NOTE: The sample run selects a flight by its list number (e.g. 1),
-// but Airline only offers findFlight(code). Adding something like
-// getFlightCount() and getFlight(int index) to Airline would allow that.
+// Option 2: asks for a flight by its list number and returns it,
+// or nullptr if the number is not valid.
 Flight* selectFlight(Airline& airline) {
-    string code = readWord("Enter the flight code: ");
-    Flight* flight = airline.findFlight(code);
+    int number = readInt("Enter the flight number: ");
+    Flight* flight = airline.getFlight(number);
 
     if (flight == nullptr)
-        cout << "No flight with code " << code << " was found.\n";
+        cout << "Invalid flight number. Please enter a number from 1 to "
+             << airline.getFlightCount() << ".\n";
     else
         cout << "You have selected flight " << flight->getFlightCode()
              << " from " << flight->getOrigin()
@@ -203,7 +202,7 @@ int main() {
                 pressReturn();
                 break;
             case 2: {
-                // Keep the previous selection if the code is not found.
+                // Keep the previous selection if the number is invalid.
                 Flight* found = selectFlight(airline);
                 if (found != nullptr)
                     selected = found;
