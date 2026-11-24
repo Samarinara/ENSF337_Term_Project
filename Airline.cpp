@@ -78,6 +78,18 @@ Flight* Airline::findFlight(const std::string& flight_code) {
     return nullptr;
 }
 
+int Airline::getFlightCount() const {
+    return flights.size();
+}
+
+Flight* Airline::getFlight(int number) {
+    if (number < 1 || number > getFlightCount()) {
+        return nullptr;
+    }
+
+    return &flights[number - 1];
+}
+
 bool Airline::savePassengerData(const std::string& passenger_file) {
     std::vector<PassengerRecord> passenger_records;
     std::string error_message;

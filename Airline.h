@@ -16,6 +16,11 @@ public:
     void displayFlights() const;
     Flight* findFlight(const std::string& flight_code);
 
+    // Number of flights loaded, and access by list position (1-based,
+    // matching the numbers shown to the user). Returns nullptr if out of range.
+    int getFlightCount() const;
+    Flight* getFlight(int number);
+
     bool loadData(const std::string& flight_file,
                   const std::string& passenger_file);
 
