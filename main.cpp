@@ -4,6 +4,7 @@
 // passenger data is managed by the Airline, Flight and Passenger classes.
 
 #include <cctype>
+#include <cstdlib>
 #include <iostream>
 #include <limits>
 #include <string>
@@ -29,6 +30,8 @@ int readInt(const string& prompt) {
     int value;
     cout << prompt;
     while (!(cin >> value)) {
+        if (cin.eof())   // input ended (e.g. Ctrl+D), stop instead of looping
+            exit(0);
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Invalid input. Please enter a number: ";
@@ -142,6 +145,37 @@ void addPassenger(Flight& flight) {
          << " was added to flight " << flight.getFlightCode() << ".\n";
 }
 
+// Option 6: removes a passenger from the flight by id.
+// BACKEND NOTE: Flight::removePassenger() returns void, so the passenger is
+// looked up here first to confirm they exist and to get their name.
+void removePassenger(Flight& flight) {
+    int id = readInt("Please enter the id of the passenger that needs to be removed: ");
+
+    for (const Passenger& p : flight.getPassengers()) {
+        if (p.getPassengerId() == id) {
+            // Copy the name before removing, since p is erased with it.
+            string name = p.getFirstName() + " " + p.getLastName();
+            flight.removePassenger(id);
+            cout << "\nPassenger " << name << " was successfully removed from flight "
+                 << flight.getFlightCode() << ".\n";
+            return;
+        }
+    }
+    cout << "\nNo passenger with id " << id << " is on this flight.\n";
+}
+
+// Option 7: asks for confirmation, then saves all passengers to the file.
+void saveData(Airline& airline) {
+    string answer = readWord("Save the updated passenger data to " + PASSENGER_FILE + "? (Y or N) ");
+
+    if (toupper(answer[0]) != 'Y')
+        cout << "\nData was not saved.\n";
+    else if (airline.savePassengerData(PASSENGER_FILE))
+        cout << "\nAll passenger data was saved successfully.\n";
+    else
+        cout << "\nPassenger data could not be saved.\n";
+}
+
 // ---------- Main ----------
 
 int main() {
@@ -179,6 +213,7 @@ int main() {
             case 3:
             case 4:
             case 5:
+            case 6:
                 // Options 3 to 6 all need a selected flight.
                 if (selected == nullptr)
                     cout << "Please select a flight first (option 2).\n";
@@ -188,8 +223,14 @@ int main() {
                     selected->displaySeatMap();
                 else if (choice == 4)
                     showPassengers(*selected);
-                else
+                else if (choice == 5)
                     addPassenger(*selected);
+                else
+                    removePassenger(*selected);
+                pressReturn();
+                break;
+            case 7:
+                saveData(airline);
                 pressReturn();
                 break;
             case 8:
