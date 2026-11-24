@@ -3,6 +3,7 @@
 // Handles the title screen, menus and user input. All flight and
 // passenger data is managed by the Airline, Flight and Passenger classes.
 
+#include <cctype>
 #include <iostream>
 #include <limits>
 #include <string>
@@ -104,6 +105,43 @@ void showPassengers(const Flight& flight) {
     cout << line << "\n";
 }
 
+// Option 5: reads a new passenger's details and adds them to the flight.
+// BACKEND NOTE: Flight::addPassenger() does no checking and returns void,
+// so the checks below are done here. Ideally addPassenger() would validate
+// and return a bool. IDs are only checked within this flight because
+// Airline has no way to look through every flight's passengers.
+void addPassenger(Flight& flight) {
+    int id = readInt("Please enter the passenger id: ");
+    string first = readWord("Please enter the passenger first name: ");
+    string last = readWord("Please enter the passenger last name: ");
+    string phone = readWord("Please enter the passenger phone number: ");
+    int row = readInt("Enter the passenger's desired row: ");
+    char seat = toupper(readWord("Enter the passenger's desired seat: ")[0]);
+
+    // Seat must exist on this aircraft (rows start at 1, seats start at 'A').
+    char last_seat = 'A' + flight.getSeatsPerRow() - 1;
+    if (row < 1 || row > flight.getNumberOfRows() || seat < 'A' || seat > last_seat) {
+        cout << "Seat " << row << seat << " does not exist on this flight.\n";
+        return;
+    }
+
+    // ID and seat must not already be used on this flight.
+    for (const Passenger& p : flight.getPassengers()) {
+        if (p.getPassengerId() == id) {
+            cout << "Passenger id " << id << " is already on this flight.\n";
+            return;
+        }
+        if (p.getSeatRow() == row && p.getSeatLetter() == seat) {
+            cout << "Seat " << row << seat << " is already taken.\n";
+            return;
+        }
+    }
+
+    flight.addPassenger(Passenger(id, first, last, phone, row, seat));
+    cout << "Passenger " << first << " " << last
+         << " was added to flight " << flight.getFlightCode() << ".\n";
+}
+
 // ---------- Main ----------
 
 int main() {
@@ -140,6 +178,7 @@ int main() {
             }
             case 3:
             case 4:
+            case 5:
                 // Options 3 to 6 all need a selected flight.
                 if (selected == nullptr)
                     cout << "Please select a flight first (option 2).\n";
@@ -147,8 +186,10 @@ int main() {
                     // BACKEND NOTE: displaySeatMap() is missing the
                     // "A B C D" column letters shown in the sample run.
                     selected->displaySeatMap();
-                else
+                else if (choice == 4)
                     showPassengers(*selected);
+                else
+                    addPassenger(*selected);
                 pressReturn();
                 break;
             case 8:
