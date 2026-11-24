@@ -89,6 +89,21 @@ Flight* selectFlight(Airline& airline) {
     return flight;
 }
 
+// Option 4: prints the passenger table for a flight.
+// BACKEND NOTE: Passenger::print() separates fields with single spaces, so
+// rows do not line up under these column headers. Using setw in print()
+// would fix the alignment.
+void showPassengers(const Flight& flight) {
+    const string line(61, '-');
+    cout << "Passenger List (Flight: " << flight.getFlightCode()
+         << " from " << flight.getOrigin()
+         << " to " << flight.getDestination() << ")\n\n"
+         << "ID      First Name   Last Name    Phone           Row   Seat\n"
+         << line << "\n";
+    flight.displayPassengers();
+    cout << line << "\n";
+}
+
 // ---------- Main ----------
 
 int main() {
@@ -123,6 +138,19 @@ int main() {
                 pressReturn();
                 break;
             }
+            case 3:
+            case 4:
+                // Options 3 to 6 all need a selected flight.
+                if (selected == nullptr)
+                    cout << "Please select a flight first (option 2).\n";
+                else if (choice == 3)
+                    // BACKEND NOTE: displaySeatMap() is missing the
+                    // "A B C D" column letters shown in the sample run.
+                    selected->displaySeatMap();
+                else
+                    showPassengers(*selected);
+                pressReturn();
+                break;
             case 8:
                 cout << "Program terminated.\n";
                 break;
