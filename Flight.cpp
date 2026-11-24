@@ -12,8 +12,14 @@ void Flight::displaySeatMap() const {
         number_of_rows, std::vector<char>(seats_per_row, '-'));
 
     for (const Passenger& passenger : passengers) {
-        seat_map[passenger.getSeatRow() - 1]
-                [passenger.getSeatLetter() - 'A'] = 'X';
+        int row_index = passenger.getSeatRow() - 1;
+        int seat_index = passenger.getSeatLetter() - 'A';
+
+        if (row_index >= 0 && row_index < number_of_rows &&
+            seat_index >= 0 && seat_index < seats_per_row) {
+
+            seat_map[row_index][seat_index] = 'X';
+        }
     }
 
     std::cout << "\nSeat Map for " << flight_code << "\n";
