@@ -1,0 +1,4 @@
+AZ300 Calgary Wilmington 7 3
+BB425 Calgary Tokyo 4 3
+SM522 Calgary London 10 3
+GG673 Montreal Calgary 10 3
